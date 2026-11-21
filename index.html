@@ -600,18 +600,43 @@ select.inp{height:46px}
     if (/\/exec\/?$/.test(relay) || /script\.google/.test(relay)) return relay + (relay.indexOf('?') >= 0 ? '&' : '?') + 'url=' + encodeURIComponent(url);
     return relay + encodeURIComponent(url);
   }
+  function isAppsScript(relay) { relay = cleanUrl(relay); return /\/exec\/?$/.test(relay) || /script\.google/.test(relay); }
+  // Chargement « JSONP » : le relais est chargé comme un script (marche sur les très vieux Safari)
+  function jsonp(url, cb) {
+    var name = '__ics' + (jsonp.n = (jsonp.n || 0) + 1) + '_' + Date.now(), done = false, el = document.createElement('script'), tm;
+    function fin(err, txt) {
+      if (done) return; done = true; clearTimeout(tm);
+      window[name] = function () {};
+      if (el.parentNode) el.parentNode.removeChild(el);
+      cb(err, txt);
+    }
+    window[name] = function (txt) { fin(null, String(txt)); };
+    el.onerror = function () { var e = new Error('bloqué'); e.status = 0; fin(e); };
+    el.onload = function () { setTimeout(function () { var e = new Error('ancien'); e.old = true; fin(e); }, 1500); };
+    tm = setTimeout(function () { var e = new Error('délai dépassé'); e.status = 0; fin(e); }, 30000);
+    el.src = url + '&callback=' + name + '&_=' + Date.now();
+    document.getElementsByTagName('head')[0].appendChild(el);
+  }
   // Récupère un calendrier .ics, via le relais s'il est configuré
   function fetchIcs(url, relay, cb) {
-    getText(relay ? relayUrl(relay, url) : url, function (err, txt) {
+    var get = (relay && isAppsScript(relay)) ? jsonp : getText;
+    get(relay ? relayUrl(relay, url) : url, function (err, txt) {
       if (!err && (!txt || txt.indexOf('BEGIN:VCALENDAR') < 0)) {
-        err = new Error(/non autoris/i.test(txt || '') ? 'lien refusé par le relais (pas un lien iCloud)' : /<html/i.test(txt || '') ? 'le relais renvoie une page web : vérifie « Qui a accès : Tout le monde »' : 'ce lien ne renvoie pas un calendrier');
+        err = new Error(/non autoris/i.test(txt || '') ? 'le relais a refusé ce lien : ce n’est pas un lien iCloud (webcal://p…-caldav.icloud.com/…)'
+          : /^Erreur iCloud/.test(txt || '') ? txt
+          : /<html/i.test(txt || '') ? 'le relais renvoie une page web : vérifie « Qui a accès : Tout le monde »'
+          : 'ce lien ne renvoie pas un calendrier');
       }
       cb(err, txt);
     });
   }
-  function explainErr(err, relay) {
+  function explainErr(err, relay, url) {
     if (!err) return '';
-    if (err.status === 0 || err.message === 'bloqué') return relay ? 'le relais est injoignable : vérifie son adresse (…/exec) et qu’il est déployé pour « Tout le monde »' : 'iCloud bloque la lecture directe depuis une page web (c’est normal) : il faut le relais Google ci-dessous';
+    if (err.old) return 'le relais répond, mais c’est l’ancienne version du script. Recolle le nouveau code (fichier relais-icloud.gs) puis Déployer → Gérer les déploiements → ✏️ → Version : Nouvelle version → Déployer.';
+    if (err.status === 0 || err.message === 'bloqué') {
+      if (!relay) return 'iCloud bloque la lecture directe depuis une page web (c’est normal) : il faut le relais Google ci-dessous';
+      return 'l’iPad n’arrive pas à joindre le relais. Pour vérifier, ouvre cette adresse dans Safari, tu dois voir du texte commençant par BEGIN:VCALENDAR : ' + relayUrl(relay, url);
+    }
     if (err.status === 404) return 'lien introuvable : le calendrier n’est peut-être plus public';
     return err.message;
   }
@@ -1013,7 +1038,7 @@ select.inp{height:46px}
         if (!url) return;
         pending++;
         fetchIcs(url, relay, function (err, txt) {
-          out.push(err ? '❌ <b>' + esc(name) + '</b> : ' + esc(explainErr(err, relay)) : '✅ <b>' + esc(name) + '</b> : ça marche ! ' + parseICS(txt).length + ' événements trouvés. Touche Enregistrer.');
+          out.push(err ? '❌ <b>' + esc(name) + '</b> : <span class="sel">' + esc(explainErr(err, relay, url)) + '</span>' : '✅ <b>' + esc(name) + '</b> : ça marche ! ' + parseICS(txt).length + ' événements trouvés. Touche Enregistrer.');
           if (--pending === 0) res.innerHTML = out.join('<br>');
         });
       });
