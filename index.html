@@ -116,8 +116,10 @@ body.standalone .view{top:20px}
 .lcard.lit svg{stroke:var(--light);fill:rgba(232,170,110,.35)}
 .lcard.scene svg{stroke:var(--cal)}
 .lcard .ln{font-family:var(--serif);font-size:23px;margin:8px 0 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lrow{display:-webkit-flex;display:flex}
-.lbtn{-webkit-flex:1;flex:1;height:58px;border:0;border-radius:16px;font-size:17px;background:var(--panel2);color:var(--text);margin:0 4px;font-family:var(--type)}
+.lrow{display:block;text-align:center;font-size:0;white-space:nowrap}
+.lbtn{display:inline-block;vertical-align:top;width:44%;height:60px;padding:0;margin:0 3%;border:0;border-radius:16px;font-size:22px;font-weight:700;letter-spacing:2px;text-align:center;background:var(--panel2);color:var(--text);font-family:var(--type)}
+.lbtn.wide{width:94%}
+.lbtn.off{background:var(--ink);color:#f5ede4}
 .lbtn.on{background:var(--light);color:#fff;font-weight:600}
 .lcard.scene .lbtn.on{background:var(--cal)}
 .lnote{width:100%;color:var(--muted);font-size:15px;padding:10px 12px 0;line-height:1.5}
@@ -622,7 +624,7 @@ select.inp{height:46px}
     var get = (relay && isAppsScript(relay)) ? jsonp : getText;
     get(relay ? relayUrl(relay, url) : url, function (err, txt) {
       if (!err && (!txt || txt.indexOf('BEGIN:VCALENDAR') < 0)) {
-        err = new Error(/non autoris/i.test(txt || '') ? 'le relais a refusé ce lien : ce n’est pas un lien iCloud (webcal://p…-caldav.icloud.com/…)'
+        err = new Error(/non autoris/i.test(txt || '') ? 'le relais a refusé ce lien. Pour un calendrier Outlook, mets à jour le code du relais (fichier relais-icloud.gs) puis redéploie en « Nouvelle version ». Sinon, vérifie que c’est bien un lien iCloud ou Outlook'
           : /^Erreur iCloud/.test(txt || '') ? txt
           : /<html/i.test(txt || '') ? 'le relais renvoie une page web : vérifie « Qui a accès : Tout le monde »'
           : 'ce lien ne renvoie pas un calendrier');
@@ -1080,12 +1082,12 @@ select.inp{height:46px}
     var h = '';
     each(lights, function (l) {
       if (l.type === 'scene') {
-        h += '<div class="lcard scene">' + STAR + '<div class="ln">' + esc(l.name) + '</div><div class="lrow"><button class="lbtn on" data-l="' + l.id + '" data-a="on">Activer</button></div></div>';
+        h += '<div class="lcard scene">' + STAR + '<div class="ln">' + esc(l.name) + '</div><div class="lrow"><button class="lbtn on wide" data-l="' + l.id + '" data-a="on">Activer</button></div></div>';
       } else {
         var st = lstate[l.id];
         h += '<div class="lcard' + (st === 'on' ? ' lit' : '') + '">' + BULB + '<div class="ln">' + esc(l.name) + '</div><div class="lrow">' +
-          '<button class="lbtn' + (st === 'on' ? ' on' : '') + '" data-l="' + l.id + '" data-a="on">Allumer</button>' +
-          '<button class="lbtn" data-l="' + l.id + '" data-a="off">Éteindre</button></div></div>';
+          '<button class="lbtn' + (st === 'on' ? ' on' : '') + '" data-l="' + l.id + '" data-a="on">ON</button>' +
+          '<button class="lbtn' + (st === 'off' ? ' off' : '') + '" data-l="' + l.id + '" data-a="off">OFF</button></div></div>';
       }
     });
     var unconf = lights.some(function (l) { return !l.on; });
