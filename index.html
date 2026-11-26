@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" xmlns:xlink="http://www.w3.org/1999/xlink">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -232,6 +232,36 @@ select.inp{height:46px}
 
 #toast{position:fixed;left:50%;bottom:30px;width:520px;margin-left:-260px;text-align:center;z-index:95;background:var(--ink);color:#f5ede4;border-radius:18px;padding:14px 18px;font-size:18px;opacity:0;-webkit-transform:translateY(20px);transform:translateY(20px);-webkit-transition:all .25s;transition:all .25s;pointer-events:none}
 #toast.show{opacity:1;-webkit-transform:none;transform:none}
+
+/* Miroir photo */
+.quote{width:300px !important}
+.mirror{position:absolute;left:806px;top:252px;width:196px;height:294px;cursor:pointer;-webkit-touch-callout:none;-webkit-filter:drop-shadow(0 10px 14px rgba(70,45,25,.28));filter:drop-shadow(0 10px 14px rgba(70,45,25,.28))}
+.mirror .mi{opacity:0;-webkit-transition:opacity 1.6s;transition:opacity 1.6s}
+.mirror .mi.on{opacity:1}
+@media (orientation:portrait){.mirror{display:none}}
+.mirror{-webkit-touch-callout:none}
+.cropwrap{display:-webkit-flex;display:flex;-webkit-align-items:flex-start;align-items:flex-start}
+.cropbox{position:relative;width:250px;height:500px;overflow:hidden;background:#3b332c;border-radius:4px;-webkit-flex:none;flex:none;touch-action:none;cursor:move}
+.cropbox img{position:absolute;top:0;left:0;-webkit-transform-origin:0 0;transform-origin:0 0;max-width:none;pointer-events:none}
+.cropbox svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.cropside{-webkit-flex:1;flex:1;margin-left:28px}
+.cropside .step{font-family:var(--type);font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.cropside p{font-size:17px;line-height:1.5;color:#5e5349;margin:10px 0 18px}
+.zrow{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin-bottom:12px}
+.zrow .btn{margin:0 8px 0 0;width:56px;font-size:26px;padding:0;text-align:center}
+.zrow span{font-family:var(--type);color:var(--muted);font-size:14px}
+.cropside .btn.blk{display:block;width:100%;margin:0 0 10px;text-align:center}
+.thumbs{margin-top:18px;white-space:nowrap}
+.thumbs img{width:44px;height:88px;object-fit:cover;border-radius:22px 22px 3px 3px;margin-right:6px;opacity:.45;border:2px solid transparent}
+.thumbs img.cur{opacity:1;border-color:var(--cal)}
+.thumbs img.done{opacity:1}
+
+.pgrid{margin:4px -6px 0}
+.pth{display:inline-block;position:relative;width:76px;height:152px;margin:6px;vertical-align:top;cursor:pointer}
+.pth img{width:100%;height:100%;object-fit:cover;border-radius:38px 38px 4px 4px;border:3px solid #c9a56a}
+.pth .x{position:absolute;top:-6px;right:-6px;width:32px;height:32px;border-radius:16px;border:0;background:#a8503a;color:#fff;font-size:16px;padding:0;line-height:32px}
+.pick{position:relative;overflow:hidden;display:inline-block}
+.pick input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;font-size:200px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -272,6 +302,33 @@ select.inp{height:46px}
     </div>
   </div>
   <div class="quote" id="quote"></div>
+  <svg class="mirror" id="pframe" viewBox="0 0 200 300">
+    <defs>
+      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9b97c"/><stop offset=".45" stop-color="#b38a4e"/><stop offset=".7" stop-color="#d2ad6c"/><stop offset="1" stop-color="#8a6534"/></linearGradient>
+      <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".12"/></linearGradient>
+      <clipPath id="glass"><path d="M44 272V122Q44 66 100 44Q156 66 156 122V272Z"/></clipPath>
+      <path id="arc" d="M30 150Q28 52 100 22Q172 52 170 150"/>
+    </defs>
+    <!-- cadre en ogive -->
+    <path d="M16 292V124Q14 40 100 6Q186 40 184 124V292Z" fill="url(#gold)" stroke="#5a4128" stroke-width="2.5"/>
+    <path d="M24 288V126Q23 50 100 16Q177 50 176 126V288Z" fill="none" stroke="#f0dcae" stroke-width="1.2" opacity=".8"/>
+    <!-- fleuron -->
+    <path d="M100 6l-7-6h14z" fill="#8a6534"/><circle cx="100" cy="1" r="0" />
+    <!-- colonnes -->
+    <path d="M30 160V280M36 160V280M170 160V280M164 160V280" stroke="#7a5a32" stroke-width="1.4" opacity=".7"/>
+    <!-- inscription -->
+    <text font-family="Georgia,serif" font-size="8.6" letter-spacing=".6" fill="#4a3520"><textPath href="#arc" xlink:href="#arc" startOffset="50%" text-anchor="middle">ERISED STRA EHRU OYT UBE CAFRU OYT ON WOHSI</textPath></text>
+    <!-- verre + photos -->
+    <path d="M42 274V122Q42 64 100 41Q158 64 158 122V274Z" fill="#3b332c" stroke="#5a4128" stroke-width="2"/>
+    <g clip-path="url(#glass)">
+      <rect x="40" y="40" width="120" height="236" fill="#4a4038"/>
+      <g id="mi-g"></g>
+      <rect x="40" y="40" width="120" height="236" fill="url(#sheen)"/>
+    </g>
+    <g id="mi-empty" font-family="American Typewriter,Courier New,monospace" font-size="10" fill="#e8dfd4" text-anchor="middle"><text x="100" y="150">Appui long</text><text x="100" y="166">pour ajouter</text><text x="100" y="182">des photos</text></g>
+    <!-- socle -->
+    <rect x="12" y="288" width="176" height="8" rx="2" fill="url(#gold)" stroke="#5a4128" stroke-width="2"/>
+  </svg>
   <svg class="shelf" viewBox="0 0 560 248"><rect x="20" y="226" width="520" height="16" rx="2" fill="#c2a68d"/>
 <rect x="60" y="76" width="34" height="150" rx="4" fill="#a99484"/><rect x="68" y="88" width="18" height="8" rx="2" fill="#f4efe8"/><path d="M68 150h18M68 158h14M68 166h18" stroke="#f4efe8" stroke-width="2"/>
 <rect x="96" y="66" width="32" height="160" rx="4" fill="#26221f"/><path d="M104 80h16M104 210h16" stroke="#f4efe8" stroke-width="2"/>
@@ -281,9 +338,20 @@ select.inp{height:46px}
 <rect x="318" y="70" width="34" height="156" rx="4" fill="#fffdfa" stroke="#e3dbd0" stroke-width="2"/><path d="M326 84h18M326 214h18" stroke="#c9bcae" stroke-width="2"/>
 <rect x="354" y="90" width="28" height="136" rx="4" fill="#a8714b"/><ellipse cx="368" cy="160" rx="7" ry="11" fill="#f4efe8"/>
 <rect x="392" y="196" width="138" height="30" rx="4" fill="#fffdfa" stroke="#e3dbd0" stroke-width="2"/><path d="M402 204v14M408 204v14M480 211h30" stroke="#c9bcae" stroke-width="2"/>
-<rect x="402" y="168" width="118" height="28" rx="5" fill="#26221f"/><path d="M412 182h40" stroke="#f4efe8" stroke-width="2"/>
-<path d="M432 128h48l-6 40h-36z" fill="#b36f4a"/><rect x="428" y="124" width="56" height="10" rx="2" fill="#a5623f"/>
-<path d="M440 124c0-34 32-34 32 0z" fill="#c4ad98"/><path d="M450 102l1 4M461 98l0 4M456 112l1 4M446 114l1 4M466 110l1 4" stroke="#fffdfa" stroke-width="2" stroke-linecap="round"/></svg>
+
+<g transform="translate(0 28)"><g class="aloe">
+<path d="M450 128C436 112 418 108 396 112C414 98 438 104 458 124Z" fill="#3a5640"/>
+<path d="M462 128C476 112 494 108 516 112C498 98 474 104 454 124Z" fill="#3a5640"/>
+<path d="M446 128C434 108 418 94 408 72C428 82 446 100 458 126Z" fill="#46684a"/>
+<path d="M466 128C478 108 494 94 504 72C484 82 466 100 454 126Z" fill="#46684a"/>
+<path d="M444 128C440 104 434 80 436 56C448 76 456 100 460 128Z" fill="#527653"/>
+<path d="M468 128C472 104 478 80 476 56C464 76 456 100 452 128Z" fill="#527653"/>
+<path d="M447 128C447 98 450 70 456 44C462 70 465 98 465 128Z" fill="#46684a"/>
+<path d="M456 50Q457 88 456 122M440 64Q448 94 452 122M472 64Q464 94 460 122M414 78Q436 98 450 122M498 78Q476 98 462 122M402 110Q428 106 448 124M510 110Q484 106 464 124" stroke="#86a882" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".55"/>
+<g fill="#d6e6cc" opacity=".75"><circle cx="441" cy="82" r="1.4"/><circle cx="445" cy="98" r="1.4"/><circle cx="471" cy="82" r="1.4"/><circle cx="467" cy="98" r="1.4"/><circle cx="456" cy="68" r="1.4"/><circle cx="457" cy="92" r="1.4"/><circle cx="424" cy="88" r="1.3"/><circle cx="488" cy="88" r="1.3"/><circle cx="416" cy="108" r="1.3"/><circle cx="496" cy="108" r="1.3"/><circle cx="432" cy="100" r="1.2"/><circle cx="480" cy="100" r="1.2"/></g>
+</g>
+<path d="M432 128h48l-6 40h-36z" fill="#b36f4a"/><rect x="428" y="124" width="56" height="10" rx="2" fill="#a5623f"/></g>
+</svg>
 </div>
 
 <!-- ============ CALENDRIER ============ -->
@@ -1461,6 +1529,300 @@ select.inp{height:46px}
     if (changed) { saveTimers(); renderTimers(); updateTimerBar(); checkAlarm(); }
   }
   setInterval(tick, 250);
+
+
+  /* =====================================================
+     MIROIR PHOTO — stockage et import
+     ===================================================== */
+  var photos = []; // { id, src (photo réduite, pour recadrer), crop (image du miroir), added }
+  var photoSpeed = load('photoSpeed', 8);
+
+  // Stockage : IndexedDB (beaucoup de place) ; sinon localStorage (sans la photo source)
+  var PStore = (function () {
+    var db = null, useLS = false;
+    function lsLoad() { return load('photos', []); }
+    function lsSave() {
+      var ok = save('photos', photos.map(function (p) { return { id: p.id, crop: p.crop, added: p.added }; }));
+      if (!ok) toast('⚠️ Plus de place pour les photos : retires-en quelques-unes');
+    }
+    function open(cb) {
+      var idb = null;
+      try { idb = window.indexedDB || window.webkitIndexedDB; } catch (e) {}
+      if (!idb) { useLS = true; cb(); return; }
+      var done = false;
+      function fail() { if (!done) { done = true; useLS = true; cb(); } }
+      try {
+        var rq = idb.open('maison-photos', 1);
+        rq.onupgradeneeded = function () { rq.result.createObjectStore('photos', { keyPath: 'id' }); };
+        rq.onsuccess = function () { if (!done) { done = true; db = rq.result; cb(); } };
+        rq.onerror = fail;
+        setTimeout(fail, 4000);
+      } catch (e) { fail(); }
+    }
+    return {
+      loadAll: function (cb) {
+        open(function () {
+          if (useLS) { cb(lsLoad()); return; }
+          var out = [];
+          try {
+            var c = db.transaction('photos', 'readonly').objectStore('photos').openCursor();
+            c.onsuccess = function () { var cur = c.result; if (cur) { out.push(cur.value); cur['continue'](); } else cb(out); };
+            c.onerror = function () { useLS = true; cb(lsLoad()); };
+          } catch (e) { useLS = true; cb(lsLoad()); }
+        });
+      },
+      put: function (p) {
+        if (useLS) { lsSave(); return; }
+        try { db.transaction('photos', 'readwrite').objectStore('photos').put(p); } catch (e) { useLS = true; lsSave(); }
+      },
+      del: function (id) {
+        if (useLS) { lsSave(); return; }
+        try { db.transaction('photos', 'readwrite').objectStore('photos')['delete'](id); } catch (e) { useLS = true; lsSave(); }
+      },
+      local: function () { return useLS; }
+    };
+  })();
+
+  // Les photos prises en portrait ont une « orientation » cachée : on vérifie si Safari la gère seul
+  var autoRotates = null;
+  (function () {
+    var t = new Image();
+    t.onload = function () { autoRotates = t.width === 1 && t.height === 2; };
+    t.onerror = function () { autoRotates = false; };
+    t.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4QAiRXhpZgAATU0AKgAAAAgAAQESAAMAAAABAAYAAAAAAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAABAAIDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwBtFFFeWeyf/9k=';
+  })();
+  function exifOrientation(buf) {
+    try {
+      var v = new DataView(buf);
+      if (v.getUint16(0) !== 0xFFD8) return 1;
+      var off = 2, len = v.byteLength;
+      while (off < len - 4) {
+        var mk = v.getUint16(off);
+        if (mk === 0xFFE1) {
+          if (v.getUint32(off + 4) !== 0x45786966) return 1;
+          var t = off + 10, little = v.getUint16(t) === 0x4949;
+          var ifd = t + v.getUint32(t + 4, little), n = v.getUint16(ifd, little);
+          for (var i = 0; i < n; i++) {
+            var e = ifd + 2 + i * 12;
+            if (v.getUint16(e, little) === 0x0112) return v.getUint16(e + 8, little);
+          }
+          return 1;
+        }
+        if ((mk & 0xFF00) !== 0xFF00) break;
+        off += 2 + v.getUint16(off + 2);
+      }
+    } catch (e) {}
+    return 1;
+  }
+
+  // Lit un fichier photo, le remet à l'endroit et le réduit (900 px max) pour le recadrage
+  function readPhoto(file, cb) {
+    var fr = new FileReader();
+    fr.onerror = function () { cb(null); };
+    fr.onload = function () {
+      var o = autoRotates ? 1 : exifOrientation(fr.result);
+      var URLx = window.URL || window.webkitURL, url = URLx.createObjectURL(file), im = new Image();
+      im.onerror = function () { URLx.revokeObjectURL(url); cb(null); };
+      im.onload = function () {
+        var w = im.naturalWidth, h = im.naturalHeight, k = Math.min(1, 900 / Math.max(w, h));
+        var dw = Math.round(w * k), dh = Math.round(h * k), swap = o >= 5 && o <= 8;
+        var c = document.createElement('canvas'), x = c.getContext('2d');
+        c.width = swap ? dh : dw; c.height = swap ? dw : dh;
+        switch (o) {
+          case 2: x.transform(-1, 0, 0, 1, dw, 0); break;
+          case 3: x.transform(-1, 0, 0, -1, dw, dh); break;
+          case 4: x.transform(1, 0, 0, -1, 0, dh); break;
+          case 5: x.transform(0, 1, 1, 0, 0, 0); break;
+          case 6: x.transform(0, 1, -1, 0, dh, 0); break;
+          case 7: x.transform(0, -1, -1, 0, dh, dw); break;
+          case 8: x.transform(0, -1, 1, 0, 0, dw); break;
+        }
+        x.drawImage(im, 0, 0, dw, dh);
+        URLx.revokeObjectURL(url);
+        cb(c.toDataURL('image/jpeg', 0.85));
+      };
+      im.src = url;
+    };
+    fr.readAsArrayBuffer(file);
+  }
+
+  /* ---------- Miroir : défilement ---------- */
+  var SVGNS = 'http://www.w3.org/2000/svg', XLINK = 'http://www.w3.org/1999/xlink';
+  var mirIdx = 0, mirTimer = null;
+  function setHref(el, v) { el.setAttribute('href', v); el.setAttributeNS(XLINK, 'xlink:href', v); }
+  function renderMirror() {
+    var g = $('mi-g'); if (!g) return;
+    while (g.firstChild) g.removeChild(g.firstChild);
+    $('mi-empty').style.display = photos.length ? 'none' : '';
+    each(photos, function (p, i) {
+      var im = document.createElementNS(SVGNS, 'image');
+      im.setAttribute('x', '40'); im.setAttribute('y', '40'); im.setAttribute('width', '120'); im.setAttribute('height', '240');
+      im.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      im.setAttribute('class', i === 0 ? 'mi on' : 'mi');
+      setHref(im, p.crop);
+      g.appendChild(im);
+    });
+    mirIdx = 0;
+    clearInterval(mirTimer);
+    if (photos.length > 1) mirTimer = setInterval(nextPhoto, photoSpeed * 1000);
+  }
+  function nextPhoto() {
+    var ims = $('mi-g').getElementsByTagName('image');
+    if (ims.length < 2) return;
+    ims[mirIdx].setAttribute('class', 'mi');
+    mirIdx = (mirIdx + 1) % ims.length;
+    ims[mirIdx].setAttribute('class', 'mi on');
+  }
+
+  // Toucher court = photo suivante ; appui long (0,8 s) = fenêtre « Mes photos »
+  (function () {
+    var mir = $('pframe'), lt = null, longDone = false, moved = false;
+    function startPress() { longDone = false; moved = false; clearTimeout(lt); lt = setTimeout(function () { longDone = true; photoManager(); }, 800); }
+    function endPress() { clearTimeout(lt); }
+    mir.addEventListener('touchstart', startPress, false);
+    mir.addEventListener('touchmove', function () { moved = true; endPress(); }, false);
+    mir.addEventListener('touchend', endPress, false);
+    mir.addEventListener('mousedown', startPress, false);
+    mir.addEventListener('mouseup', endPress, false);
+    mir.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
+    mir.onclick = function () {
+      if (longDone || moved) { longDone = false; moved = false; return; }
+      if (!photos.length) { photoManager(); return; }
+      nextPhoto();
+      clearInterval(mirTimer); mirTimer = setInterval(nextPhoto, photoSpeed * 1000);
+    };
+  })();
+
+  /* ---------- Fenêtre « Mes photos » ---------- */
+  function photoManager() {
+    var speeds = [5, 8, 15, 30, 60], opts = '';
+    each(speeds, function (v) { opts += '<option value="' + v + '"' + (v === photoSpeed ? ' selected' : '') + '>Toutes les ' + v + ' s</option>'; });
+    var grid = photos.map(function (p) {
+      return '<div class="pth" data-pid="' + p.id + '"><img src="' + p.crop + '" alt=""><button class="x" data-del="' + p.id + '">✕</button></div>';
+    }).join('');
+    openModal('<div class="sh-head"><h2>Mes photos</h2><button class="btn" data-close>Fermer</button></div>' +
+      '<div style="display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center">' +
+      '<span class="btn accent pick" style="margin:0;background:var(--cal);line-height:46px">+ Choisir des photos<input type="file" id="ph-file" accept="image/*" multiple></span>' +
+      '<select class="inp" id="ph-speed" style="width:200px;margin-left:12px">' + opts + '</select></div>' +
+      '<div class="help">Les photos choisies sont recadrées une par une pour le miroir. Touche une photo ci-dessous pour la <b>recadrer</b>, ou ✕ pour la retirer.' +
+      (PStore.local() ? '<br>⚠️ Mémoire limitée sur cet iPad : une trentaine de photos au maximum.' : '') + '</div>' +
+      '<h3>Dans le miroir (' + photos.length + ')</h3>' +
+      (grid ? '<div class="pgrid" id="ph-grid">' + grid + '</div>' : '<div class="ag-empty">Aucune photo pour l’instant.</div>'));
+    $('ph-speed').onchange = function () { photoSpeed = +this.value; save('photoSpeed', photoSpeed); renderMirror(); };
+    $('ph-file').onchange = function () {
+      var files = [], fl = this.files;
+      for (var i = 0; i < fl.length; i++) files.push(fl[i]);
+      if (!files.length) return;
+      toast('Préparation de ' + files.length + ' photo' + (files.length > 1 ? 's' : '') + '…');
+      var out = [];
+      (function next(i) {
+        if (i >= files.length) { if (out.length) openCrop(out); else toast('Impossible de lire ces photos'); return; }
+        readPhoto(files[i], function (src) { if (src) out.push({ id: uid(), src: src, added: Date.now() + i, isNew: true }); next(i + 1); });
+      })(0);
+    };
+    var g = $('ph-grid');
+    if (g) g.onclick = function (e) {
+      var d = up(e.target, '[data-del]');
+      if (d) {
+        if (!confirm('Retirer cette photo du miroir ?')) return;
+        var id = d.getAttribute('data-del');
+        photos = photos.filter(function (p) { return p.id !== id; });
+        PStore.del(id); renderMirror(); photoManager();
+        return;
+      }
+      var t = up(e.target, '[data-pid]');
+      if (t) { var pid = t.getAttribute('data-pid'); each(photos, function (p) { if (p.id === pid) openCrop([p]); }); }
+    };
+  }
+
+  /* ---------- Recadrage ---------- */
+  var CBW = 250, CBH = 500, CARCH = 'M6 494V126Q6 48 125 6Q244 48 244 126V494Z';
+  var cq = [], cqi = 0, cimg = null, cst = null;
+  function openCrop(list) {
+    cq = list; cqi = 0;
+    openModal('<div class="sh-head"><h2>Recadrer la photo</h2><button class="btn" id="cr-cancel">Annuler</button></div>' +
+      '<div class="cropwrap"><div class="cropbox" id="cr-box"><img id="cr-img" alt="">' +
+      '<svg viewBox="0 0 250 500"><path fill="rgba(248,244,238,.88)" fill-rule="evenodd" d="M0 0H250V500H0Z ' + CARCH + '"/>' +
+      '<path d="' + CARCH + '" fill="none" stroke="#b38a4e" stroke-width="5"/></svg></div>' +
+      '<div class="cropside"><div class="step" id="cr-step"></div>' +
+      '<p>Fais glisser la photo avec le doigt pour choisir ce qui apparaîtra dans le miroir. Utilise + et − pour zoomer.</p>' +
+      '<div class="zrow"><button class="btn" id="cr-out">−</button><button class="btn" id="cr-in">+</button><span id="cr-z"></span></div>' +
+      '<button class="btn blk" id="cr-center">Centrer automatiquement</button>' +
+      '<button class="btn accent blk" id="cr-ok" style="background:var(--cal)">Valider cette photo</button>' +
+      '<div class="thumbs" id="cr-thumbs"></div></div></div>');
+    $('cr-cancel').onclick = function () { cropFinish(); };
+    $('cr-in').onclick = function () { cropZoom(1.2); };
+    $('cr-out').onclick = function () { cropZoom(1 / 1.2); };
+    $('cr-center').onclick = function () { cst.z = 1; cropCenter(); cropDraw(); };
+    $('cr-ok').onclick = cropValidate;
+    cropBindDrag($('cr-box'));
+    cropLoad();
+  }
+  function cropLoad() {
+    cimg = $('cr-img');
+    cimg.onload = function () {
+      var w = cimg.naturalWidth, h = cimg.naturalHeight;
+      cst = { w: w, h: h, base: Math.max(CBW / w, CBH / h), z: 1, x: 0, y: 0 };
+      cropCenter(); cropDraw();
+    };
+    cimg.src = cq[cqi].src || cq[cqi].crop;
+    $('cr-step').textContent = 'Photo ' + (cqi + 1) + ' sur ' + cq.length;
+    var t = '';
+    for (var i = 0; i < cq.length; i++) t += '<img src="' + (cq[i].done ? cq[i].crop : (cq[i].src || cq[i].crop)) + '" class="' + (i === cqi ? 'cur' : cq[i].done ? 'done' : '') + '">';
+    $('cr-thumbs').innerHTML = t;
+  }
+  function cropScale() { return cst.base * cst.z; }
+  function cropCenter() { var s = cropScale(); cst.x = (CBW - cst.w * s) / 2; cst.y = (CBH - cst.h * s) / 2; }
+  function cropDraw() {
+    var s = cropScale();
+    cst.x = Math.min(0, Math.max(CBW - cst.w * s, cst.x));
+    cst.y = Math.min(0, Math.max(CBH - cst.h * s, cst.y));
+    cimg.style.width = cst.w + 'px'; cimg.style.height = cst.h + 'px';
+    var tr = 'translate(' + cst.x + 'px,' + cst.y + 'px) scale(' + s + ')';
+    cimg.style.webkitTransform = tr; cimg.style.transform = tr;
+    $('cr-z').textContent = 'zoom ×' + cst.z.toFixed(1);
+  }
+  function cropZoom(f) {
+    var cx = CBW / 2, cy = CBH / 2, s0 = cropScale();
+    cst.z = Math.max(1, Math.min(4, cst.z * f));
+    var s1 = cropScale();
+    cst.x = cx - (cx - cst.x) * s1 / s0; cst.y = cy - (cy - cst.y) * s1 / s0;
+    cropDraw();
+  }
+  function cropBindDrag(box) {
+    var sx, sy, ox, oy, on = false;
+    function start(x, y) { if (!cst) return; on = true; sx = x; sy = y; ox = cst.x; oy = cst.y; }
+    function move(x, y) { if (!on) return; cst.x = ox + x - sx; cst.y = oy + y - sy; cropDraw(); }
+    box.addEventListener('touchstart', function (e) { var t = e.touches[0]; start(t.clientX, t.clientY); e.preventDefault(); }, false);
+    box.addEventListener('touchmove', function (e) { var t = e.touches[0]; move(t.clientX, t.clientY); e.preventDefault(); }, false);
+    box.addEventListener('touchend', function () { on = false; }, false);
+    box.addEventListener('mousedown', function (e) { start(e.clientX, e.clientY); e.preventDefault(); }, false);
+    box.addEventListener('mousemove', function (e) { move(e.clientX, e.clientY); }, false);
+    box.addEventListener('mouseup', function () { on = false; }, false);
+    box.addEventListener('mouseleave', function () { on = false; }, false);
+  }
+  function cropValidate() {
+    if (!cst) return;
+    var c = document.createElement('canvas'), s = cropScale();
+    c.width = 240; c.height = 480;
+    c.getContext('2d').drawImage(cimg, -cst.x / s, -cst.y / s, CBW / s, CBH / s, 0, 0, 240, 480);
+    var p = cq[cqi];
+    p.crop = c.toDataURL('image/jpeg', 0.82); p.done = true;
+    if (p.isNew) { delete p.isNew; photos.push(p); }
+    var rec = { id: p.id, src: p.src, crop: p.crop, added: p.added };
+    PStore.put(rec);
+    if (cqi < cq.length - 1) { cqi++; cropLoad(); } else cropFinish();
+  }
+  function cropFinish() {
+    each(cq, function (p) { delete p.done; delete p.isNew; });
+    renderMirror();
+    photoManager();
+  }
+
+  PStore.loadAll(function (list) {
+    photos = (list || []).filter(function (p) { return p && p.crop; }).sort(function (a, b) { return a.added - b.added; });
+    renderMirror();
+  });
 
   /* ---------- Démarrage ---------- */
   var lastMinute = -1;
